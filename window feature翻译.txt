@@ -32,6 +32,49 @@ Tracking Size
 Mirroring Dialog Boxes and Message Boxes
 Mirroring Device Contexts Not Associated with a Window
 
+Overlapped窗口有标题栏，border，客户区；它可以作为应用程序的主窗口。他也可以拥有窗口菜单、最小化最大化按钮，
+以及滚动条。一个典型的Overlapped窗口会拥有上述所有的部件。
+使用 CreateWindowEx函数，指定 WS_OVERLAPPED 或者r WS_OVERLAPPEDWINDOW风格，应用程序就可以创建一个Overlapped窗口。
+如果使用WS_OVERLAPPED风格，窗口会包含一个标题栏和border。如果使用WS_OVERLAPPEDWINDOW风格，
+窗口将会拥有一个标题栏，可调的border，窗口菜单以及最小化、最大化按钮。
+
+pop-up窗口是一个特殊的Overlapped窗口，一般用来做显示在主窗口外的对话框、消息框、以及其他暂时性的窗口。
+，pop-up窗口的标题栏是可选的。pop-up窗口的风格和Overlapped窗口的风格是一样的:都是用WS_OVERLAPPED风格。
+你可以在CreateWindowEx函数中指定WS_POPUP风格来创建一个pop-up窗口。
+标题栏通过WS_CAPTION风格设定，设定WS_POPUPWINDOW风格可以创建一个拥有border和菜单的pop-up窗口。
+WS_CAPTION风格一定要与WS_POPUPWINDOW风格组合使用，才能让窗口菜单变的可见。
+
+子窗口
+指定 WS_CHILD风格的窗口是一个子窗口，子窗口被限制在父窗口的客户区内。
+一个典型的应用会通过子窗口来将父窗口的客户区分割成几个不同的功能区域。
+在CreateWindowEx函数中指定WS_CHILD风格就可以创建出一个子窗口。
+
+一个子窗口一定会有一个父窗口，父窗口可以是一个Overlapped窗口，也可以是一个pop-up窗口，甚至可以是一个子窗口。
+调用CreateWindowEx函数时可以指定一个父窗口。不过如果你使用了WS_CHILD 风格，但是没有指定父窗口。
+系统不会创建这个(子)窗口。
+
+一个子窗口，除了客户区之外不再有其它的功能，
+除非显示指定。一个应用程序可以为子窗口请求标题栏、
+窗口菜单、最大化、最小化按钮、border以及滚动条。
+但是子窗口不能拥有菜单。如果用程序指定一个菜单句柄，
+无论是注册子窗口还是创建子窗口这个菜单句柄都会被忽略。
+如果没有指定边界风格。系统会创建一个无边界的窗口。
+应用程序可以使用无边界的子窗口来分隔父窗口的客户区，同时，
+这些区域的边界对用户是不可见的。
+
+位置
+系统总是把子窗口放到父窗口客户区的左上角。
+子窗口的任何一部分将永远不会显示在父窗口的边界以外。
+如果一个应用创建了一个比父窗口还要大的子窗口。
+或者在设置子窗口的位置时部分或者全部超出父窗口的边界
+系统将会裁剪子窗口。也就是说超出父窗口客户区的那部分将不会被显示
+以下动作，将会同时影响到父窗口和子窗口：
+销毁——子窗口将会在父窗口消毁之前消毁。
+隐藏——窗口将会在父窗口之前隐藏。子窗口只有在父窗口可见时才可见。
+移动——子窗口跟随父窗口的客户区移动。移动完毕后子窗口负责重绘自己的客户区。
+显示——子窗口在父窗口显示之后显示。
+
+剪切
 系统不会自动从父窗口的客户区裁剪一个子窗口，也就是说，父窗口仍然会绘制被子窗口覆盖的那部分区
 域(尽管绘制了也仍然看不见)。但是，如果父窗口拥有了WS_CLIPCHILDREN 风格，系统就会从父窗口的客户区
 裁剪子窗口，子窗口被裁剪后，父窗口无法(无需)绘制被子窗口覆盖的区域。
@@ -58,6 +101,47 @@ WS_CLIPSIBLINGS风格。一个子窗口有了WS_CLIPSIBLINGS风格后，该窗�
 或者后裔窗口。
 
 EnumChildWindows 函数枚举父窗口的所有子窗口，然后把每个子窗口的句柄传给应用程序定义的回调函数中，后裔窗口也会被枚举。
+
+
+消息
+系统将子窗口的输入消息越过父窗口直接传递给子窗口，唯一的例外是使用EnableWindow 函数将子窗口设为Disable态的时候。
+这种情况下，系统将原本应该传给子窗口的消息转为传给父窗口。该策略可以允许父窗口在必要的时候检查输入消息。激活子窗口。
+子窗口可以拥有一个独一无二的整型ID，当涉及到控件窗口时，子窗口的ID显得尤为重要。应用程序通过发送消息控制控件活动。
+应用程序使用控件子窗口的ID来投递消息到控件上。另外，控件也会发送通知类消息给父窗口。一个通知类消息包含控件子窗口的
+ID，父窗口使用该ID识别出是哪个子控件发送的消息。一个应用程序通过 CreateWindowEx 函数的hMenu参数
+指定其他类型的子窗口的子窗口ID，此时hMenu参数是一个值而不是菜单的句柄。
+
+层窗口
+   使用层窗口可以显著提升性能，复杂的形状、动画、alpha混合等特效还可以提升窗口的视觉效果。
+系统自动组成并重绘分层窗口和底下的应用程序窗口，这样做的好处是，层窗口被渲染的很顺滑，
+不会出现复杂的窗口区域常见的的闪烁。此外，分层的窗口可以做成半透明效果———也就是alpha混合。
+  调用 CreateWindowEx函数时指定WS_EX_LAYERED扩展风格，或者在窗口创建完毕后调用SetWindowLong 
+函数指定 WS_EX_LAYERED 扩展风格，即可创建出一个层窗口。只有调用了 SetLayeredWindowAttributes 
+或者 UpdateLayeredWindow 函数后才能使层窗口显示出来。
+  注意：从win8开始，WS_EX_LAYERED 扩展风格不仅可用在top-level窗口上，还可用在子窗口上，在这之前的windows
+版本中，WS_EX_LAYERED 扩展风格只能用在top-level窗口上。
+
+  调用SetLayeredWindowAttributes设置一个给定的分层窗口的不透明度或透明度色值。调用完毕后，当窗口显示或者
+改变大小时，系统仍会让窗口重绘。但是，如果一个层窗口作为其亲属窗口在桌面上移动的结果而显示，此时系统不会
+让窗口重绘，因为系统已经保存了层窗口的镜像。遗留的应用无需为了给窗口增加半透明或透明效果而修改现有的重绘
+代码，应为系统会将调用了SetLayeredWindowAttributes的窗口的重绘重定向到“屏幕外内存”，并重新组合它达到预期效果。
+
+  当需要更快更高效的动画、或者按像素的alpha混合时，可以使用UpdateLayeredWindow函数。当应用程序需要直接提供
+层窗口的形状与内容时，应该首先调用UpdateLayeredWindow函数，不能调用SetLayeredWindowAttributes以使用生系统提供的
+重定向机制。另外，直接使用UpdateLayeredWindow可以使内存更加高效，因为系统无需用额外的存储空间保存重定向窗口的镜像。
+调用UpdateLayeredWindow改变层窗口的位置和大小可使动画的效率达到最高。值得注意的是，SetLayeredWindowAttributes调用
+完毕，随后的UpdateLayeredWindow调用会失败，知道WS_EX_LAYERED被重新设定。
+  层窗口的点击测试基于窗口的形状和透明度，也就是，alpha值为0的区域，鼠标消息将会穿透过去。但是，如果层窗口使用了
+ WS_EX_TRANSPARENT扩展风格，窗口形状将会被忽略，鼠标消息将会传递给层窗口下方的窗口。
+ 
+消息窗口
+  消息窗口可以接收、发送消息，它是不可见的、没有Zorder、无法被枚举到、无法接受广播消息，该窗口只是简单的做消息分发。
+  调用 CreateWindowEx函数时将第七个参数hWndParent设置成HWND_MESSAGE常量，或者一个已存在的消息窗口的句柄，即可创建
+一个消息窗口，也可以使用SetParent函数，将hWndNewParent形参设置成HWND_MESSAGE常量，来将一个现有的窗口变成消息窗口。
+  调用 FindWindowEx函数，并将 hwndParent 形参设置成HWND_MESSAGE常量，即可找到所有的消息窗口。另外， 如果FindWindowEx
+函数的hwndParent 和 hwndChildAfter两个形参都是NULL，将会同事搜索消息窗口、top-level窗口。
+  
+
 
 owner 窗口 与 子窗口
 Z序(重绘)方面
