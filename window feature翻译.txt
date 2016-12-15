@@ -2,8 +2,8 @@ top—level window
 owned window
 
 窗口类型
-Overlapped Windows
-Pop-up Windows
+重叠 Windows
+弹出 Windows
 Child Windows
 Layered Windows
 Message-Only Windows
@@ -32,16 +32,16 @@ Tracking Size
 Mirroring Dialog Boxes and Message Boxes
 Mirroring Device Contexts Not Associated with a Window
 
-Overlapped窗口有标题栏，border，客户区；它可以作为应用程序的主窗口。他也可以拥有窗口菜单、最小化最大化按钮，
-以及滚动条。一个典型的Overlapped窗口会拥有上述所有的部件。
-使用 CreateWindowEx函数，指定 WS_OVERLAPPED 或者r WS_OVERLAPPEDWINDOW风格，应用程序就可以创建一个Overlapped窗口。
-如果使用WS_OVERLAPPED风格，窗口会包含一个标题栏和border。如果使用WS_OVERLAPPEDWINDOW风格，
-窗口将会拥有一个标题栏，可调的border，窗口菜单以及最小化、最大化按钮。
+重叠窗口有标题栏，边框，客户区；它一般作为应用程序的主窗口。同时也可拥有窗口菜单、最小化最大化按钮，
+以及滚动条。一个典型的重叠窗口会拥有上述所有的部件。
+使用 CreateWindowEx函数，指定WS_OVERLAPPED 或者WS_OVERLAPPEDWINDOW风格，应用程序就可以创建一个重叠窗口。
+如果使用WS_OVERLAPPED风格，窗口会包含一个标题栏和边框。如果使用WS_OVERLAPPEDWINDOW风格，
+窗口将会拥有一个标题栏，可调的边框，窗口菜单以及最小化、最大化按钮。
 
-pop-up窗口是一个特殊的Overlapped窗口，一般用来做显示在主窗口外的对话框、消息框、以及其他暂时性的窗口。
-，pop-up窗口的标题栏是可选的。pop-up窗口的风格和Overlapped窗口的风格是一样的:都是用WS_OVERLAPPED风格。
-你可以在CreateWindowEx函数中指定WS_POPUP风格来创建一个pop-up窗口。
-标题栏通过WS_CAPTION风格设定，设定WS_POPUPWINDOW风格可以创建一个拥有border和菜单的pop-up窗口。
+弹出窗口是一个特殊的重叠窗口，一般用来做显示在主窗口外的对话框、消息框、以及其他暂时性的窗口。
+，弹出窗口的标题栏是可选的。弹出窗口的风格和重叠窗口的风格是一样的:都是用WS_OVERLAPPED风格。
+你可以在CreateWindowEx函数中指定WS_POPUP风格来创建一个弹出窗口。
+标题栏通过WS_CAPTION风格设定，设定WS_POPUPWINDOW风格可以创建一个拥有边框和菜单的弹出窗口。
 WS_CAPTION风格一定要与WS_POPUPWINDOW风格组合使用，才能让窗口菜单变的可见。
 
 子窗口
@@ -49,13 +49,13 @@ WS_CAPTION风格一定要与WS_POPUPWINDOW风格组合使用，才能让窗口�
 一个典型的应用会通过子窗口来将父窗口的客户区分割成几个不同的功能区域。
 在CreateWindowEx函数中指定WS_CHILD风格就可以创建出一个子窗口。
 
-一个子窗口一定会有一个父窗口，父窗口可以是一个Overlapped窗口，也可以是一个pop-up窗口，甚至可以是一个子窗口。
-调用CreateWindowEx函数时可以指定一个父窗口。不过如果你使用了WS_CHILD 风格，但是没有指定父窗口。
+一个子窗口一定会有一个父窗口，父窗口可以是一个重叠窗口，也可以是一个弹出窗口，甚至可以是一个子窗口。
+调用CreateWindowEx函数时可以指定一个父窗口。不过如果你使用了WS_CHILD风格，但是没有指定父窗口。
 系统不会创建这个(子)窗口。
 
 一个子窗口，除了客户区之外不再有其它的功能，
 除非显示指定。一个应用程序可以为子窗口请求标题栏、
-窗口菜单、最大化、最小化按钮、border以及滚动条。
+窗口菜单、最大化、最小化按钮、边框以及滚动条。
 但是子窗口不能拥有菜单。如果用程序指定一个菜单句柄，
 无论是注册子窗口还是创建子窗口这个菜单句柄都会被忽略。
 如果没有指定边界风格。系统会创建一个无边界的窗口。
@@ -105,7 +105,7 @@ EnumChildWindows 函数枚举父窗口的所有子窗口，然后把每个子窗
 
 消息
 系统将子窗口的输入消息越过父窗口直接传递给子窗口，唯一的例外是使用EnableWindow 函数将子窗口设为Disable态的时候。
-这种情况下，系统将原本应该传给子窗口的消息转为传给父窗口。该策略可以允许父窗口在必要的时候检查输入消息。激活子窗口。
+这种情况下，系统将原本应该传给子窗口的消息转为传给父窗口。该策略可以允许父窗口在必要的时候检查输入消息、激活子窗口。
 子窗口可以拥有一个独一无二的整型ID，当涉及到控件窗口时，子窗口的ID显得尤为重要。应用程序通过发送消息控制控件活动。
 应用程序使用控件子窗口的ID来投递消息到控件上。另外，控件也会发送通知类消息给父窗口。一个通知类消息包含控件子窗口的
 ID，父窗口使用该ID识别出是哪个子控件发送的消息。一个应用程序通过 CreateWindowEx 函数的hMenu参数
@@ -139,9 +139,49 @@ ID，父窗口使用该ID识别出是哪个子控件发送的消息。一个应�
   调用 CreateWindowEx函数时将第七个参数hWndParent设置成HWND_MESSAGE常量，或者一个已存在的消息窗口的句柄，即可创建
 一个消息窗口，也可以使用SetParent函数，将hWndNewParent形参设置成HWND_MESSAGE常量，来将一个现有的窗口变成消息窗口。
   调用 FindWindowEx函数，并将 hwndParent 形参设置成HWND_MESSAGE常量，即可找到所有的消息窗口。另外， 如果FindWindowEx
-函数的hwndParent 和 hwndChildAfter两个形参都是NULL，将会同事搜索消息窗口、top-level窗口。
+函数的hwndParent 和 hwndChildAfter两个形参都是NULL，将会同时搜索消息窗口、top-level窗口。
   
 
+二窗口关系
+窗口与用户或者其他窗口可以有很多种关系，一个窗口可能是个owned窗口、前景窗口、背景窗口，还可能跟另一个窗口有Z-order
+上的关系，以下将会详细讨论：
+   1，前景窗口与背景窗口
+   一个进程可以有多个线程，每个线程都可以创建窗口。假如窗口正在被用户使用，那么创建窗口的线程就叫“前台线程”，创建出的
+ 窗口叫做前台窗口。其他的线程都称作背景线程，它们创建出的窗口叫背景窗口。
+每个线程都有一个优先级，该优先级决定了线程所能得到的CPU时间片的大小。虽然应用可以设置线程的优先级，但通常来讲，前台
+线程的优先级会高于背景线程。因为优先级更高，所以前台线程能够比后台线程收到更多的CPU时间片。前台线程的常规优先级是9，
+后台线程是7。
+   用户可以通过点击、 ALT+TAB 或者 ALT+ESC 等方式将一个窗口变为前台窗口。调用GetForegroundWindow 函数可获得前台窗口
+的句柄。通过对比GetForegroundWindow 函数返回的句柄 跟 应用程序本身的句柄，可以判断出当前应用是不是前台窗口。
+   应用程序可以调用 SetForegroundWindow函数来设置前台窗口。
+   一个进程能否设置前台窗口，会受到系统的约束，当进程满足以下条件中的任何一个的时候，才能够设置前台窗口。
+   A.该进程正是当前前台窗口
+   B.该进程被一个前台进程启动
+   C.该进程收到最后一个输入事件
+   D.当前没有前台进程
+   E.前台进程正在被调试
+   F.前台(进程)没被锁住(详见LockSetForegroundWindow函数)
+   G.前台锁住超时(详见SystemParametersInfo中的SPI_GETFOREGROUNDLOCKTIMEOUT)
+   H.没有菜单被激活
+   一个有能力设置前台窗口的进程，可以通过调用AllowSetForegroundWindow函数、或者使用BSF_ALLOWSFW标志
+调用 BroadcastSystemMessage函数来使得另一个进程拥有设置前台窗口的能力。前台线程调用 LockSetForegroundWindow
+后，可以使SetForegroundWindow 函数失效。
+
+ 2，owned窗口
+   一个重叠窗口或者弹出窗口可以被另一个重叠窗口或弹出窗口"拥有"。一个窗口"被拥有"的区域有以下限制：
+   A.owned窗口在Z-order上总是高于它的owner
+   B.系统会在销毁owner时自动销毁owned窗口
+   C.owner窗口最小化时，owned窗口会被隐藏
+   
+   只有重叠窗口或弹出窗口才可以做owner窗口，子窗口不能做owner窗口。调用CreateWindowEx函数并指定WS_OVERLAPPED 
+或WS_POPUP风格，然后将 hwndParent 形参赋一个owner窗口的句柄，即可创建出一个owned窗口。hwndParent的值必须是
+重叠窗口或弹出窗口。如果hwndParent的值是一个子窗口，系统会将该子窗口最终所属的top-level父窗口的句柄赋值给hwndParent。
+own关系一经指定，就无法再改变。
+   对话框和消息框都是默认的owned窗口。应用程序在调用创建对话框和消息框的函数的时候就指定了他们的owner窗口。
+   使用GW_OWNER标志调用GetWindow函数即可获得一个窗口的owner。
+   
+ 3，Z-order
+ 
 
 owner 窗口 与 子窗口
 Z序(重绘)方面
