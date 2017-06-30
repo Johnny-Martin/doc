@@ -283,6 +283,10 @@ WS_EX_TOPMOST样式。 在Z序上，所有topmost窗口显示在在任何非topm
 		与大小、位置相关的函数
 		与大小、位置相关的消息
 		
+		默认大小与位置
+		通过在CreateWindowEx函数中指定CW_USEDEFAULT风格，应用可以允许系统计算一个toplevel窗口的初始大小
+	与位置。
+		
 	
 		
 	
